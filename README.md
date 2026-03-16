@@ -1,69 +1,109 @@
 # NurKit
 > AI-powered project orchestration for serious vibe coding.
-> Works with Claude Code, OpenCode, or any AI tool.
+> Works with Claude Code and OpenCode. No bash scripts. No setup headaches.
 
 ---
 
 ## What is NurKit?
 
-NurKit is a structured system that makes AI-assisted development reliable, organized, and consistent across sessions. It solves the core problems of vibe coding:
+NurKit is a structured system that makes AI-assisted development reliable,
+organized, and consistent across sessions. It solves the core problems of
+vibe coding:
 
-- **Context loss** between sessions — CONTEXT.md saves state, every time
-- **Planning gaps** — clarify + analyze + gaps audit catches everything before a line of code is written
-- **Model cost waste** — use powerful models for thinking, cheaper models for execution
-- **Vibe coding chaos** — every file has a header, every task gets a commit, nothing is silently forgotten
-
----
-
-## Install
-
-### On any machine (Windows Git Bash or Mac Terminal)
-
-```bash
-git clone https://github.com/[your-username]/nurkit.git
-```
-
-That's it. NurKit lives on your machine. No npm, no global install needed.
+- **Context loss** between sessions — CONTEXT.md saves state every time
+- **Planning gaps** — clarify + analyze + gaps audit catches everything
+  before a line of code is written
+- **Model cost waste** — planning commands use Opus, build commands use
+  Sonnet — automatic in OpenCode, hinted in Claude Code
+- **Vibe coding chaos** — every file has a header, every task gets a
+  commit, nothing is silently forgotten
 
 ---
 
-## Start a New Project
+## Install Once
 
 ```bash
-mkdir my-new-project
-cd my-new-project
-
-# Copy NurKit into the project
-cp /path/to/nurkit/kit .
-cp -r /path/to/nurkit/.kit .
-cp /path/to/nurkit/CLAUDE.md .
-cp /path/to/nurkit/.gitignore .
-
-# Make the script executable
-chmod +x kit
-
-# Initialize
-./kit init
+# Clone NurKit to your machine — do this once ever
+git clone https://github.com/[your-username]/nurkit.git ~/nurkit
 ```
+
+---
+
+## New Project
+
+```bash
+mkdir my-app && cd my-app
+git init
+
+# Copy NurKit into your project
+cp -r ~/nurkit/.kit .
+cp -r ~/nurkit/.claude .        # if you use Claude Code
+cp -r ~/nurkit/.opencode .      # if you use OpenCode
+cp ~/nurkit/CLAUDE.md .         # if you use Claude Code
+
+# Commit
+git add .
+git commit -m "init: add NurKit"
+```
+
+Open Claude Code or OpenCode in this folder and type `/clarify` to begin.
+
+---
+
+## Existing Project
+
+```bash
+cd your-existing-project
+
+# Copy .kit — safe, this folder won't exist yet
+cp -r ~/nurkit/.kit .
+
+# Claude Code commands
+# If .claude/ does not exist:
+cp -r ~/nurkit/.claude .
+# If .claude/commands/ already exists with other commands:
+cp ~/nurkit/.claude/commands/*.md .claude/commands/
+
+# OpenCode commands
+# If .opencode/ does not exist:
+cp -r ~/nurkit/.opencode .
+# If .opencode/commands/ already exists with other commands:
+cp ~/nurkit/.opencode/commands/*.md .opencode/commands/
+
+# CLAUDE.md
+# If CLAUDE.md does not exist:
+cp ~/nurkit/CLAUDE.md .
+# If CLAUDE.md already exists — open it and paste this at the bottom:
+# ---
+# ## NurKit Rules
+# [paste content of ~/nurkit/CLAUDE.md here]
+
+# .gitignore — never overwrite, only append these 3 lines if not present:
+echo "" >> .gitignore
+echo "# NurKit" >> .gitignore
+echo ".kit/ENV.md" >> .gitignore
+echo ".kit/CONTEXT.md" >> .gitignore
+echo ".kit/AGENT-ERRORS.md" >> .gitignore
+
+# Commit
+git add .
+git commit -m "chore: add NurKit"
+```
+
+Open Claude Code or OpenCode and type `/clarify` to begin.
 
 ---
 
 ## The Workflow
 
-```
-./kit clarify       ← Document your idea fully (use your best model)
-./kit plan          ← Full architecture blueprint (use your best model)
-./kit analyze       ← Catch what the plan missed from clarify
-./kit gaps          ← Completeness audit — empty states, validation, security, etc.
-./kit checklist     ← Generate phased tasks (cheaper model is fine)
-./kit build         ← Execute phase by phase (cheaper for backend, UI model for frontend)
-./kit deploy        ← Staging first, then production
-```
+Same for both new and existing projects. Same for both tools.
 
-### Starting with an existing idea document
-
-```bash
-./kit clarify --input my-idea.md
+```
+/clarify      →    /plan      →    /analyze
+    ↓
+/gaps         →    /checklist →    /build
+    ↓
+/deploy
 ```
 
 ---
@@ -72,69 +112,65 @@ chmod +x kit
 
 | Command | What it does | Model |
 |---|---|---|
-| `./kit init` | Scaffold NurKit into a project | — |
-| `./kit clarify` | Deep questioning to document your idea | Best |
-| `./kit clarify --input file.md` | Clarify from an existing document | Best |
-| `./kit plan` | Full blueprint from clarify output | Best |
-| `./kit analyze` | Find what the plan missed from clarify | Best |
-| `./kit gaps` | Master completeness audit | Best |
-| `./kit checklist` | Generate phased task list | Cheaper |
-| `./kit build` | Execute current phase, auto-commit | Cheaper / UI model |
-| `./kit feature "name"` | Full flow scoped to one feature | Best → Cheaper |
-| `./kit review` | Compare code vs blueprint | Best |
-| `./kit status` | Progress dashboard | Any |
-| `./kit commit` | Meaningful commit + changelog | Any |
-| `./kit sync` | Save session state before closing | Any |
-| `./kit deploy --prod` | Deploy to production | — |
-
----
-
-## Slash Commands
-
-### Claude Code
-Commands are in `.claude/commands/`. Type `/` inside Claude Code to use them.
-No model switching needed — just use the commands in order.
-
-### OpenCode
-Commands are in `.opencode/commands/`. Type `/` inside OpenCode to use them.
-Models are pinned per command automatically — planning commands use Opus, build commands use Sonnet.
-
-### Usage
-/clarify          — document your idea
-/plan             — write the blueprint
-/analyze          — verify plan vs clarify
-/gaps             — completeness audit
-/checklist        — generate tasks
-/build            — execute current phase
-/feature auth     — scoped feature flow
-/review           — drift analysis
-/sync             — save session before closing
-/status           — progress dashboard
-/commit           — meaningful commit + changelog
-/deploy           — deploy to staging
-/deploy --prod    — deploy to production
+| `/clarify` | Deep questioning to document your idea | Best |
+| `/clarify my-idea.md` | Clarify from an existing document | Best |
+| `/plan` | Full blueprint from clarify output | Best |
+| `/analyze` | Find what the plan missed from clarify | Best |
+| `/gaps` | Master completeness audit | Best |
+| `/checklist` | Generate phased task list | Cheaper |
+| `/build` | Execute current phase, auto-commit | Cheaper |
+| `/feature auth-system` | Full flow scoped to one feature | Best → Cheaper |
+| `/review` | Compare code vs blueprint | Best |
+| `/status` | Progress dashboard | Any |
+| `/commit` | Meaningful commit + changelog update | Any |
+| `/sync` | Save session state before closing | Any |
+| `/deploy` | Deploy to staging | — |
+| `/deploy --prod` | Deploy to production | — |
 
 ---
 
 ## Model Strategy
 
-NurKit tells you when to switch models. Look for `⚡ MODEL HINT` in command output.
+### OpenCode
+Models are pinned automatically per command. You never switch manually.
+- Planning commands → Opus (clarify, plan, analyze, gaps, review)
+- Build commands → Sonnet (checklist, build, feature, sync, status, commit, deploy)
 
-- **Planning commands** (clarify, plan, analyze, gaps, review) → Use your most capable model
-- **Backend build phases** → Strong reasoning model
-- **Frontend build phases** → UI-focused model (the checklist will tell you)
-- **Routine commands** (checklist, sync, commit, status) → Cheapest model is fine
+### Claude Code
+No automatic pinning. Watch for `⚡ MODEL HINT` in responses.
+- See a hint → switch model in the model selector → continue
 
 ---
 
-## Working with Claude Code
+## How Each Tool Uses NurKit
 
-NurKit includes `CLAUDE.md` in the project root. Claude Code reads this automatically at every session start. It contains the full agent laws, session rituals, and reading order. Claude Code will always know:
+### Claude Code
+- Reads `CLAUDE.md` automatically at every session start
+- Agent knows all rules, rituals, and file locations without you explaining
+- Commands live in `.claude/commands/`
+- Type `/` to see all available commands
 
-- Where we are in the project
-- What files to read
-- What rules to follow
-- What to do before and after every session
+### OpenCode
+- Commands live in `.opencode/commands/`
+- Models pinned per command — planning always Opus, build always Sonnet
+- Type `/` to see all available commands
+
+### Both tools
+- Read the same `.kit/` files — same brain, same memory, same prompts
+- The tool is just the interface — NurKit works identically in both
+
+---
+
+## Saving a Session
+
+When your context window gets long or you are switching models:
+
+```
+/sync
+```
+
+This saves complete session state to `.kit/CONTEXT.md`.
+Next session the agent reads it and knows exactly where to continue.
 
 ---
 
@@ -143,7 +179,7 @@ NurKit includes `CLAUDE.md` in the project root. Claude Code reads this automati
 ```
 .kit/
 ├── AGENT.md              ← Agent laws and session rituals
-├── STANDARDS.md          ← Code quality principles (reference)
+├── STANDARDS.md          ← Code quality, folder rules, type rules
 ├── CONTEXT.md            ← Current session state + history
 ├── STACK.md              ← Tech stack lock
 ├── ASSUMPTIONS.md        ← Surfaced assumptions log
@@ -166,25 +202,17 @@ NurKit includes `CLAUDE.md` in the project root. Claude Code reads this automati
 
 ## Tuning NurKit
 
-Every command uses a prompt file in `.kit/prompts/`. If a command isn't producing the results you want, open the relevant prompt file and improve it. No code changes needed.
-
----
-
-## Saving a Session
-
-When your context window gets long or you're switching models, run:
-
-```bash
-./kit sync
-```
-
-This saves the complete session state to `CONTEXT.md`. Next session, the agent reads it first and knows exactly where to continue.
+Every command uses a prompt file in `.kit/prompts/`.
+If a command is not producing the results you want,
+open the relevant prompt file and improve it.
+No other changes needed — the command picks it up immediately.
 
 ---
 
 ## On Windows
 
-Use **Git Bash** (included with Git for Windows). Open Git Bash, navigate to your project, and run `./kit` commands exactly as shown. Everything works identically to Mac.
+Use **Git Bash** (included with Git for Windows).
+All commands work identically to Mac.
 
 ---
 
