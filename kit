@@ -1,0 +1,764 @@
+#!/usr/bin/env bash
+
+# ============================================
+# NurKit — AI-Powered Project Orchestration
+# Version: 1.0.0
+# Usage: ./kit <command> [options]
+# ============================================
+
+set -e
+
+NURKIT_VERSION="1.0.0"
+KIT_DIR=".kit"
+PROMPTS_DIR="$KIT_DIR/prompts"
+
+# ── Colors ────────────────────────────────
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+# ── Helpers ───────────────────────────────
+
+print_header() {
+  echo ""
+  echo -e "${BOLD}${CYAN}╔══════════════════════════════════════╗${RESET}"
+  echo -e "${BOLD}${CYAN}║           NurKit v${NURKIT_VERSION}               ║${RESET}"
+  echo -e "${BOLD}${CYAN}╚══════════════════════════════════════╝${RESET}"
+  echo ""
+}
+
+print_step() {
+  echo -e "${GREEN}✓${RESET} $1"
+}
+
+print_warn() {
+  echo -e "${YELLOW}⚠${RESET}  $1"
+}
+
+print_error() {
+  echo -e "${RED}✗${RESET} $1"
+}
+
+print_info() {
+  echo -e "${BLUE}→${RESET} $1"
+}
+
+print_hint() {
+  echo ""
+  echo -e "${YELLOW}⚡ MODEL HINT:${RESET} $1"
+  echo ""
+}
+
+print_prompt_box() {
+  local prompt="$1"
+  echo ""
+  echo -e "${BOLD}─────────────────────────────────────────────────────${RESET}"
+  echo -e "${BOLD}  PASTE THIS INTO YOUR AI TOOL:${RESET}"
+  echo -e "${BOLD}─────────────────────────────────────────────────────${RESET}"
+  echo ""
+  echo "$prompt"
+  echo ""
+  echo -e "${BOLD}─────────────────────────────────────────────────────${RESET}"
+  echo ""
+}
+
+require_kit_dir() {
+  if [ ! -d "$KIT_DIR" ]; then
+    print_error "No .kit/ folder found. Run ./kit init first."
+    exit 1
+  fi
+}
+
+get_date() {
+  date +%Y-%m-%d
+}
+
+get_datetime() {
+  date +"%Y-%m-%d %H:%M"
+}
+
+detect_cli() {
+  if command -v claude &>/dev/null; then
+    echo "claude"
+  elif command -v opencode &>/dev/null; then
+    echo "opencode"
+  else
+    echo "none"
+  fi
+}
+
+run_with_cli() {
+  local cli="$1"
+  local prompt="$2"
+  local outfile="$3"
+
+  if [ "$cli" = "claude" ]; then
+    print_step "Running with Claude Code CLI..."
+    echo "$prompt" | claude --print >> "$outfile" 2>/dev/null && return 0
+  elif [ "$cli" = "opencode" ]; then
+    print_step "Running with OpenCode CLI..."
+    echo "$prompt" | opencode >> "$outfile" 2>/dev/null && return 0
+  fi
+  return 1
+}
+
+deliver_prompt() {
+  local prompt_file="$1"
+  local outfile="$2"
+  local hint="$3"
+
+  if [ ! -f "$prompt_file" ]; then
+    print_error "Prompt file not found: $prompt_file"
+    exit 1
+  fi
+
+  # Build the prompt by injecting context
+  local prompt
+  prompt=$(build_prompt "$prompt_file")
+
+  local cli
+  cli=$(detect_cli)
+
+  if [ "$cli" != "none" ]; then
+    print_step "AI CLI detected: $cli"
+    if run_with_cli "$cli" "$prompt" "$outfile"; then
+      print_step "Done. Output saved to: $outfile"
+      return 0
+    else
+      print_warn "CLI call failed. Falling back to manual mode."
+    fi
+  else
+    print_warn "No AI CLI detected. Using manual mode."
+  fi
+
+  # Fallback: manual paste
+  if [ -n "$hint" ]; then
+    print_hint "$hint"
+  fi
+
+  if [ -n "$outfile" ]; then
+    print_info "Output will be saved to: ${BOLD}$outfile${RESET}"
+    print_info "When done, save the AI response to that file, then run the next command."
+  fi
+
+  print_prompt_box "$prompt"
+}
+
+build_prompt() {
+  local prompt_file="$1"
+  local prompt
+  prompt=$(cat "$prompt_file")
+
+  # Inject file contents into placeholders
+  if [ -f "$KIT_DIR/CONTEXT.md" ]; then
+    local context
+    context=$(cat "$KIT_DIR/CONTEXT.md")
+    prompt="${prompt//\{\{CONTEXT\}\}/$context}"
+  fi
+
+  if [ -f "$KIT_DIR/vision/VISION.md" ]; then
+    local vision
+    vision=$(cat "$KIT_DIR/vision/VISION.md")
+    prompt="${prompt//\{\{VISION\}\}/$vision}"
+  fi
+
+  if [ -f "$KIT_DIR/STACK.md" ]; then
+    local stack
+    stack=$(cat "$KIT_DIR/STACK.md")
+    prompt="${prompt//\{\{STACK\}\}/$stack}"
+  fi
+
+  # Inject latest blueprint
+  local latest_blueprint
+  latest_blueprint=$(ls -t "$KIT_DIR/blueprints/"*.md 2>/dev/null | head -1)
+  if [ -n "$latest_blueprint" ]; then
+    local blueprint
+    blueprint=$(cat "$latest_blueprint")
+    prompt="${prompt//\{\{BLUEPRINT\}\}/$blueprint}"
+  fi
+
+  # Inject latest checklist
+  local latest_checklist
+  latest_checklist=$(ls -t "$KIT_DIR/checklists/"*.md 2>/dev/null | head -1)
+  if [ -n "$latest_checklist" ]; then
+    local checklist
+    checklist=$(cat "$latest_checklist")
+    prompt="${prompt//\{\{CHECKLIST\}\}/$checklist}"
+  fi
+
+  echo "$prompt"
+}
+
+append_changelog() {
+  local entry="$1"
+  local changelog="$KIT_DIR/CHANGELOG.md"
+  local datetime
+  datetime=$(get_datetime)
+  echo "" >> "$changelog"
+  echo "### $datetime" >> "$changelog"
+  echo "$entry" >> "$changelog"
+}
+
+git_commit() {
+  local message="$1"
+  if git rev-parse --git-dir &>/dev/null 2>&1; then
+    git add -A
+    git commit -m "$message" --quiet && print_step "Git commit: $message"
+  else
+    print_warn "No git repo found. Skipping commit."
+  fi
+}
+
+# ── Commands ──────────────────────────────
+
+cmd_init() {
+  print_header
+
+  if [ -d "$KIT_DIR" ]; then
+    print_warn ".kit/ already exists. Re-initializing will not overwrite existing files."
+    read -r -p "Continue? (y/n): " confirm
+    if [ "$confirm" != "y" ]; then exit 0; fi
+  fi
+
+  echo -e "${BOLD}Welcome to NurKit.${RESET}"
+  echo ""
+  read -r -p "Project name: " PROJECT_NAME
+  echo ""
+  echo "What are we building?"
+  echo "  1) Full application (from scratch)"
+  echo "  2) Single feature (adding to existing project)"
+  read -r -p "Choose (1 or 2): " SCOPE
+
+  if [ "$SCOPE" = "1" ]; then
+    SCOPE_LABEL="full-app"
+  else
+    SCOPE_LABEL="single-feature"
+  fi
+
+  # Create folder structure
+  mkdir -p "$KIT_DIR"/{blueprints,gaps,checklists,vision,prompts}
+
+  # Copy template files from NurKit source if available
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  NURKIT_SOURCE="$SCRIPT_DIR/.kit"
+
+  copy_template() {
+    local src="$NURKIT_SOURCE/$1"
+    local dst="$KIT_DIR/$1"
+    if [ -f "$src" ] && [ ! -f "$dst" ]; then
+      cp "$src" "$dst"
+      print_step "Created $dst"
+    elif [ ! -f "$dst" ]; then
+      print_warn "Template not found for $1 — creating empty file"
+      touch "$dst"
+    else
+      print_info "Skipped $dst (already exists)"
+    fi
+  }
+
+  copy_template "AGENT.md"
+  copy_template "STANDARDS.md"
+  copy_template "CONTEXT.md"
+  copy_template "STACK.md"
+  copy_template "ASSUMPTIONS.md"
+  copy_template "KNOWN-ISSUES.md"
+  copy_template "DECISIONS.md"
+  copy_template "CHANGELOG.md"
+  copy_template "ENV.md"
+  copy_template "DEPLOY.md"
+  copy_template "DEFINITION-OF-DONE.md"
+  copy_template "GAPS-TEMPLATE.md"
+  copy_template "CHECKLIST-TEMPLATE.md"
+
+  # Copy prompts
+  for prompt_file in "$NURKIT_SOURCE/prompts/"*.md; do
+    fname=$(basename "$prompt_file")
+    dst="$KIT_DIR/prompts/$fname"
+    if [ -f "$prompt_file" ] && [ ! -f "$dst" ]; then
+      cp "$prompt_file" "$dst"
+      print_step "Created $dst"
+    fi
+  done
+
+  # Write initial CONTEXT.md
+  cat > "$KIT_DIR/CONTEXT.md" << EOF
+# NurKit Context
+## Project: $PROJECT_NAME
+## Scope: $SCOPE_LABEL
+## NurKit Version: $NURKIT_VERSION
+## Initialized: $(get_datetime)
+
+---
+
+## Current State
+- Phase: Not started
+- Last completed: Nothing yet
+- Next action: Run ./kit clarify
+
+---
+
+## Session History
+
+### $(get_datetime) — Project initialized
+- Project: $PROJECT_NAME
+- Scope: $SCOPE_LABEL
+- Status: Ready for clarification
+EOF
+
+  # Create CLAUDE.md symlink
+  if [ ! -f "CLAUDE.md" ]; then
+    ln -sf "$KIT_DIR/AGENT.md" "CLAUDE.md"
+    print_step "Created CLAUDE.md (symlink to .kit/AGENT.md)"
+  fi
+
+  # Initialize git if not already
+  if ! git rev-parse --git-dir &>/dev/null 2>&1; then
+    git init --quiet
+    print_step "Initialized git repository"
+  fi
+
+  # Create .gitignore for kit
+  if [ ! -f ".gitignore" ]; then
+    cat > ".gitignore" << 'EOF'
+# NurKit — never commit these
+.kit/ENV.md
+.kit/CONTEXT.md
+.kit/AGENT-ERRORS.md
+
+# Common
+node_modules/
+.env
+.env.local
+.env.*
+dist/
+build/
+*.log
+EOF
+    print_step "Created .gitignore"
+  fi
+
+  echo ""
+  print_step "${BOLD}NurKit initialized for: $PROJECT_NAME${RESET}"
+  echo ""
+  print_info "Next step: ${BOLD}./kit clarify${RESET}"
+  echo ""
+}
+
+cmd_clarify() {
+  require_kit_dir
+  print_header
+
+  local input_file=""
+  if [ "$1" = "--input" ] && [ -n "$2" ]; then
+    input_file="$2"
+    if [ ! -f "$input_file" ]; then
+      print_error "Input file not found: $input_file"
+      exit 1
+    fi
+    print_step "Reading idea from: $input_file"
+  fi
+
+  local outfile="$KIT_DIR/vision/VISION.md"
+  print_info "Output will be saved to: $outfile"
+  print_hint "Use your most capable model (Opus) for this step. This is the foundation of everything."
+
+  # Inject input file content into prompt if provided
+  if [ -n "$input_file" ]; then
+    local idea_content
+    idea_content=$(cat "$input_file")
+    local prompt
+    prompt=$(cat "$PROMPTS_DIR/clarify.md")
+    prompt="${prompt//\{\{IDEA_INPUT\}\}/The user has provided this idea document:\n\n$idea_content}"
+    print_prompt_box "$prompt"
+  else
+    deliver_prompt "$PROMPTS_DIR/clarify.md" "$outfile" "Use your most capable model for clarification."
+  fi
+
+  echo ""
+  print_info "After saving the AI output to $outfile, run: ${BOLD}./kit plan${RESET}"
+  echo ""
+}
+
+cmd_plan() {
+  require_kit_dir
+  print_header
+
+  if [ ! -f "$KIT_DIR/vision/VISION.md" ]; then
+    print_error "VISION.md not found. Run ./kit clarify first."
+    exit 1
+  fi
+
+  local version
+  version=$(ls "$KIT_DIR/blueprints/"*.md 2>/dev/null | wc -l)
+  version=$((version + 1))
+  local outfile="$KIT_DIR/blueprints/BLUEPRINT-v${version}.md"
+
+  print_info "Output will be saved to: $outfile"
+  print_hint "Use your most capable model (Opus) for planning. This is expensive thinking — do it once, do it right."
+
+  deliver_prompt "$PROMPTS_DIR/plan.md" "$outfile" "Use your most capable model (Opus) for this step."
+
+  echo ""
+  print_info "After saving the AI output to $outfile, run: ${BOLD}./kit analyze${RESET}"
+  echo ""
+}
+
+cmd_analyze() {
+  require_kit_dir
+  print_header
+
+  local latest_blueprint
+  latest_blueprint=$(ls -t "$KIT_DIR/blueprints/"*.md 2>/dev/null | head -1)
+
+  if [ -z "$latest_blueprint" ]; then
+    print_error "No blueprint found. Run ./kit plan first."
+    exit 1
+  fi
+
+  print_step "Analyzing: $latest_blueprint"
+  print_hint "Use your most capable model for analysis. This step finds what was lost between clarify and plan."
+
+  deliver_prompt "$PROMPTS_DIR/analyze.md" "$latest_blueprint" "Use a capable model. This is critical thinking work."
+
+  echo ""
+  print_info "After the analysis is complete and blueprint is updated, run: ${BOLD}./kit gaps${RESET}"
+  echo ""
+}
+
+cmd_gaps() {
+  require_kit_dir
+  print_header
+
+  local latest_blueprint
+  latest_blueprint=$(ls -t "$KIT_DIR/blueprints/"*.md 2>/dev/null | head -1)
+
+  if [ -z "$latest_blueprint" ]; then
+    print_error "No blueprint found. Run ./kit plan first."
+    exit 1
+  fi
+
+  local date_label
+  date_label=$(get_date)
+  local label="${1:-general}"
+  local outfile="$KIT_DIR/gaps/GAPS-${date_label}-${label}.md"
+
+  print_step "Gap template: $KIT_DIR/GAPS-TEMPLATE.md"
+  print_info "Output will be saved to: $outfile"
+  print_hint "Use a capable model for gaps audit. Missing things here = bugs in production later."
+
+  deliver_prompt "$PROMPTS_DIR/gaps.md" "$outfile" "Use a capable model. Every gap found now saves hours later."
+
+  echo ""
+  print_info "After saving gaps output to $outfile:"
+  print_info "The AI should now update the blueprint based on gap findings."
+  print_info "When blueprint is updated, run: ${BOLD}./kit checklist${RESET}"
+  echo ""
+}
+
+cmd_checklist() {
+  require_kit_dir
+  print_header
+
+  local latest_blueprint
+  latest_blueprint=$(ls -t "$KIT_DIR/blueprints/"*.md 2>/dev/null | head -1)
+  local latest_gaps
+  latest_gaps=$(ls -t "$KIT_DIR/gaps/"*.md 2>/dev/null | head -1)
+
+  if [ -z "$latest_blueprint" ]; then
+    print_error "No blueprint found. Complete planning first."
+    exit 1
+  fi
+
+  local version
+  version=$(ls "$KIT_DIR/checklists/"*.md 2>/dev/null | wc -l)
+  version=$((version + 1))
+  local outfile="$KIT_DIR/checklists/CHECKLIST-v${version}.md"
+
+  print_step "Blueprint: $latest_blueprint"
+  [ -n "$latest_gaps" ] && print_step "Latest gaps: $latest_gaps"
+  print_info "Output will be saved to: $outfile"
+  print_hint "A cheaper model can generate the checklist. The thinking is already done in the blueprint."
+
+  deliver_prompt "$PROMPTS_DIR/checklist.md" "$outfile" "A cheaper, faster model is fine for checklist generation."
+
+  echo ""
+  print_info "After saving checklist to $outfile, run: ${BOLD}./kit build${RESET}"
+  echo ""
+}
+
+cmd_build() {
+  require_kit_dir
+  print_header
+
+  local latest_checklist
+  latest_checklist=$(ls -t "$KIT_DIR/checklists/"*.md 2>/dev/null | head -1)
+
+  if [ -z "$latest_checklist" ]; then
+    print_error "No checklist found. Run ./kit checklist first."
+    exit 1
+  fi
+
+  print_step "Checklist: $latest_checklist"
+  print_step "Stack: $KIT_DIR/STACK.md"
+
+  # Detect current phase from checklist
+  local current_phase
+  current_phase=$(grep -m1 "^\- \[ \]" "$latest_checklist" 2>/dev/null | head -1 || echo "")
+
+  if [ -z "$current_phase" ]; then
+    print_step "All tasks appear complete. Run ./kit review to verify."
+    exit 0
+  fi
+
+  # Detect phase type for model hint
+  local phase_type
+  phase_type=$(grep -B5 "^\- \[ \]" "$latest_checklist" 2>/dev/null | grep "\[TYPE:" | tail -1 | grep -o "Frontend\|Backend\|DevOps" || echo "")
+
+  if [ "$phase_type" = "Frontend" ]; then
+    print_hint "This phase is FRONTEND. Consider switching to a model strong in UI/UX before continuing."
+  elif [ "$phase_type" = "Backend" ]; then
+    print_hint "This phase is BACKEND. A strong reasoning model is recommended."
+  elif [ "$phase_type" = "DevOps" ]; then
+    print_hint "This phase is DEVOPS. A strong reasoning model is recommended."
+  fi
+
+  deliver_prompt "$PROMPTS_DIR/build.md" "" ""
+
+  echo ""
+  print_info "After each completed task the AI should:"
+  print_info "  1. Update CHANGELOG.md"
+  print_info "  2. Check off the task in $latest_checklist"
+  print_info "  3. Make a git commit"
+  echo ""
+  print_info "When a phase is complete, run ${BOLD}./kit build${RESET} again to continue."
+  echo ""
+}
+
+cmd_feature() {
+  require_kit_dir
+  print_header
+
+  local feature_name="$1"
+  if [ -z "$feature_name" ]; then
+    read -r -p "Feature name (e.g. auth-system): " feature_name
+  fi
+
+  feature_name=$(echo "$feature_name" | tr ' ' '-' | tr '[:upper:]' '[:lower:]')
+  local date_label
+  date_label=$(get_date)
+
+  print_info "Feature: $feature_name"
+  print_info "Blueprint: $KIT_DIR/blueprints/BLUEPRINT-${feature_name}.md"
+  print_info "Gaps: $KIT_DIR/gaps/GAPS-${date_label}-${feature_name}.md"
+  print_info "Checklist: $KIT_DIR/checklists/CHECKLIST-${feature_name}.md"
+  echo ""
+  print_hint "Use your most capable model for feature planning. Switch to cheaper model for build."
+
+  deliver_prompt "$PROMPTS_DIR/feature.md" "$KIT_DIR/blueprints/BLUEPRINT-${feature_name}.md" "Use your most capable model for feature planning."
+
+  echo ""
+  print_info "Feature flow: clarify (scoped) → plan → gaps → checklist → build"
+  print_info "All output files are scoped to this feature. Main project files are not touched."
+  echo ""
+}
+
+cmd_review() {
+  require_kit_dir
+  print_header
+
+  print_hint "Use a capable model for review. This requires comparing code vs plan — real thinking work."
+  deliver_prompt "$PROMPTS_DIR/review.md" "" ""
+
+  echo ""
+  print_info "Review will compare current codebase against the latest blueprint."
+  print_info "Any drift found should be logged in KNOWN-ISSUES.md."
+  echo ""
+}
+
+cmd_status() {
+  require_kit_dir
+  print_header
+
+  echo -e "${BOLD}Project Status${RESET}"
+  echo ""
+
+  # Read from CONTEXT.md
+  if [ -f "$KIT_DIR/CONTEXT.md" ]; then
+    local project
+    project=$(grep "^## Project:" "$KIT_DIR/CONTEXT.md" | sed 's/## Project: //')
+    local phase
+    phase=$(grep "^- Phase:" "$KIT_DIR/CONTEXT.md" | sed 's/- Phase: //')
+    local last
+    last=$(grep "^- Last completed:" "$KIT_DIR/CONTEXT.md" | sed 's/- Last completed: //')
+    local next
+    next=$(grep "^- Next action:" "$KIT_DIR/CONTEXT.md" | sed 's/- Next action: //')
+
+    echo -e "  Project:        ${BOLD}$project${RESET}"
+    echo -e "  Current phase:  ${BOLD}$phase${RESET}"
+    echo -e "  Last completed: $last"
+    echo -e "  Next action:    ${BOLD}$next${RESET}"
+  fi
+
+  echo ""
+
+  # Count checklist tasks
+  local latest_checklist
+  latest_checklist=$(ls -t "$KIT_DIR/checklists/"*.md 2>/dev/null | head -1)
+  if [ -n "$latest_checklist" ]; then
+    local total done pending
+    total=$(grep -c "^\- \[" "$latest_checklist" 2>/dev/null || echo 0)
+    done=$(grep -c "^\- \[x\]" "$latest_checklist" 2>/dev/null || echo 0)
+    pending=$((total - done))
+    echo -e "  Tasks:  ${GREEN}$done done${RESET} / ${YELLOW}$pending pending${RESET} / $total total"
+  fi
+
+  echo ""
+
+  # Show recent changelog
+  if [ -f "$KIT_DIR/CHANGELOG.md" ]; then
+    echo -e "${BOLD}Recent Changes:${RESET}"
+    tail -20 "$KIT_DIR/CHANGELOG.md"
+  fi
+
+  echo ""
+}
+
+cmd_commit() {
+  require_kit_dir
+  print_header
+
+  read -r -p "Commit message (or press Enter to auto-generate): " message
+
+  if [ -z "$message" ]; then
+    deliver_prompt "$PROMPTS_DIR/commit.md" "" ""
+    echo ""
+    print_info "Copy the generated message above and run: git add -A && git commit -m \"your message\""
+  else
+    append_changelog "$message"
+    git_commit "$message"
+    print_step "Committed: $message"
+  fi
+
+  echo ""
+}
+
+cmd_sync() {
+  require_kit_dir
+  print_header
+
+  print_info "Syncing session state to CONTEXT.md..."
+  print_hint "A cheaper model is fine for sync. This is just summarizing what happened."
+
+  deliver_prompt "$PROMPTS_DIR/sync.md" "$KIT_DIR/CONTEXT.md" "A cheaper model is fine for session sync."
+
+  echo ""
+  print_step "Run this before closing a long session or switching models."
+  print_info "Next session, the agent will read CONTEXT.md automatically and know exactly where you left off."
+  echo ""
+}
+
+cmd_deploy() {
+  require_kit_dir
+  print_header
+
+  local target="staging"
+  if [ "$1" = "--prod" ]; then
+    target="production"
+    echo ""
+    echo -e "${RED}${BOLD}⚠  DEPLOYING TO PRODUCTION${RESET}"
+    read -r -p "Are you sure? Type 'yes' to confirm: " confirm
+    if [ "$confirm" != "yes" ]; then
+      print_info "Deploy cancelled."
+      exit 0
+    fi
+  fi
+
+  print_info "Target: ${BOLD}$target${RESET}"
+  print_info "Reading deploy config from: $KIT_DIR/DEPLOY.md"
+  echo ""
+
+  # Pre-deploy checks
+  print_step "Running pre-deploy checks..."
+
+  if git rev-parse --git-dir &>/dev/null 2>&1; then
+    local uncommitted
+    uncommitted=$(git status --porcelain 2>/dev/null | wc -l)
+    if [ "$uncommitted" -gt 0 ]; then
+      print_warn "$uncommitted uncommitted changes found."
+      read -r -p "Commit before deploy? (y/n): " do_commit
+      if [ "$do_commit" = "y" ]; then
+        cmd_commit
+      fi
+    fi
+    print_step "Pushing to GitHub..."
+    git push --quiet && print_step "Pushed to GitHub"
+  fi
+
+  deliver_prompt "$PROMPTS_DIR/deploy.md" "$KIT_DIR/DEPLOY.md" ""
+
+  echo ""
+  print_info "Deploy target: $target"
+  print_info "After deploy, update DEPLOY.md with deploy timestamp and result."
+  echo ""
+}
+
+cmd_help() {
+  print_header
+  echo -e "${BOLD}Commands:${RESET}"
+  echo ""
+  echo -e "  ${CYAN}./kit init${RESET}               Initialize NurKit in a new project"
+  echo -e "  ${CYAN}./kit clarify${RESET}            Deep questioning to document your idea"
+  echo -e "  ${CYAN}./kit clarify --input f.md${RESET}  Clarify from an existing idea file"
+  echo -e "  ${CYAN}./kit plan${RESET}               Write full blueprint from clarify output"
+  echo -e "  ${CYAN}./kit analyze${RESET}            Check plan vs clarify, find drift"
+  echo -e "  ${CYAN}./kit gaps${RESET}               Full completeness audit"
+  echo -e "  ${CYAN}./kit checklist${RESET}          Generate phased tasks from complete plan"
+  echo -e "  ${CYAN}./kit build${RESET}              Execute current phase, auto-commit"
+  echo -e "  ${CYAN}./kit feature <name>${RESET}     Full flow scoped to one feature"
+  echo -e "  ${CYAN}./kit review${RESET}             Compare built code vs blueprint"
+  echo -e "  ${CYAN}./kit status${RESET}             Show progress, pending tasks, recent changes"
+  echo -e "  ${CYAN}./kit commit${RESET}             Commit with meaningful message + changelog"
+  echo -e "  ${CYAN}./kit sync${RESET}               Save session state before closing"
+  echo -e "  ${CYAN}./kit deploy${RESET}             Deploy to staging"
+  echo -e "  ${CYAN}./kit deploy --prod${RESET}      Deploy to production (requires confirmation)"
+  echo ""
+  echo -e "${BOLD}Workflow:${RESET}"
+  echo -e "  clarify → plan → analyze → gaps → checklist → build → deploy"
+  echo ""
+  echo -e "${BOLD}Model hints:${RESET}"
+  echo -e "  Capable model:  clarify, plan, analyze, gaps, review"
+  echo -e "  Cheaper model:  checklist, build, sync, commit"
+  echo ""
+}
+
+# ── Router ────────────────────────────────
+
+COMMAND="${1:-help}"
+shift 2>/dev/null || true
+
+case "$COMMAND" in
+  init)      cmd_init "$@" ;;
+  clarify)   cmd_clarify "$@" ;;
+  plan)      cmd_plan "$@" ;;
+  analyze)   cmd_analyze "$@" ;;
+  gaps)      cmd_gaps "$@" ;;
+  checklist) cmd_checklist "$@" ;;
+  build)     cmd_build "$@" ;;
+  feature)   cmd_feature "$@" ;;
+  review)    cmd_review "$@" ;;
+  status)    cmd_status "$@" ;;
+  commit)    cmd_commit "$@" ;;
+  sync)      cmd_sync "$@" ;;
+  deploy)    cmd_deploy "$@" ;;
+  help|--help|-h) cmd_help ;;
+  *)
+    print_error "Unknown command: $COMMAND"
+    echo ""
+    cmd_help
+    exit 1
+    ;;
+esac
