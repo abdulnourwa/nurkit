@@ -4,6 +4,23 @@
 
 ---
 
+## v1.2.0 — Removed Shell Script, Simplified Setup
+
+### Removed
+- `kit` bash script — no longer needed
+- All `./kit` command references
+- `chmod +x` setup requirement
+- Terminal-switching workflow
+
+### Changed
+- README completely rewritten — new project and existing project setup
+- Setup is now pure copy-paste, no script execution
+- Usage is now entirely through slash commands inside the AI tool
+
+### How to upgrade from v1.1.0
+- Delete the `kit` file from your project root
+- No other changes needed — all .kit/ files and commands stay the same
+
 ## v1.1.0 — Slash Commands
 
 ### Added
