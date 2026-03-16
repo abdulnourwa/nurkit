@@ -1,271 +1,131 @@
+<div align="center">
+
+![NurKit Banner](file:///C:/Users/MiQDAD/.gemini/antigravity/brain/ebad8e14-ce2e-45d8-a374-a22f4dc3f12a/nurkit_banner_1773653843385.png)
+
 # NurKit
-> AI-powered project orchestration for serious vibe coding.
-> Works with Claude Code, OpenCode, Codex, and Antigravity. No bash scripts. No setup headaches.
+### AI-Powered Project Orchestration for Professional Vibe Coding
+
+[![Version](https://img.shields.io/badge/version-1.6.0-blue.svg?style=flat-square)](https://github.com/abdulnourwa/nurkit/blob/main/NURKIT-CHANGELOG.md)
+[![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/abdulnourwa/nurkit/blob/main/LICENSE)
+[![Maintenance](https://img.shields.io/badge/maintained-yes-brightgreen.svg?style=flat-square)](#)
+[![Stack](https://img.shields.io/badge/stack-Any-orange.svg?style=flat-square)](#)
+
+</div>
 
 ---
 
-## What is NurKit?
+## ⚡ What is NurKit?
 
-NurKit is a structured system that makes AI-assisted development reliable,
-organized, and consistent across sessions. It solves the core problems of
-vibe coding:
+**NurKit** is a battle-hardened orchestration layer designed to transform "vibe coding" into a structured, professional engineering workflow. It bridges the gap between raw AI capabilities and consistent, production-grade development.
 
-- **Context loss** between sessions — CONTEXT.md saves state every time
-- **Planning gaps** — clarify + analyze + gaps audit catches everything
-  before a line of code is written
-- **Model cost waste** — planning commands use Opus, build commands use
-  Sonnet — automatic in OpenCode, hinted in Claude Code
-- **Vibe coding chaos** — every file has a header, every task gets a
-  commit, nothing is silently forgotten
+### Why NurKit?
+- 🧠 **Zero Context Loss**: `CONTEXT.md` meticulously tracks session state, so your AI always knows where you left off.
+- 🎯 **Rigorous Planning**: Native `/clarify`, `/plan`, and `/gaps` workflows ensure deep architectural alignment before a single line of code is written.
+- 🏦 **Standardized Output**: Enforced file headers, modular structure, and automated changelogs keep your codebase clean and navigable.
+- 🛠️ **Tool Agnostic**: One system for **Claude Code**, **OpenCode**, **Codex**, and **Antigravity**. Same rules, same brain.
 
 ---
 
-## Install Once
+## 🚀 Quick Start
 
+### 1. Installation
+Clone NurKit once to your local machine:
 ```bash
-# Clone NurKit to your machine — do this once ever
-git clone https://github.com/[your-username]/nurkit.git ~/nurkit
+git clone https://github.com/abdulnourwa/nurkit.git ~/nurkit
 ```
 
----
-
-## New Project
-
+### 2. Scaffold a Project
+Initialize any directory (new or existing) with the NurKit core:
 ```bash
-mkdir my-app && cd my-app
-git init
+# Enter your project
+cd my-cool-project
 
-# Copy NurKit into your project
+# Inject NurKit (select based on your tools)
 cp -r ~/nurkit/.nurkit .
-cp -r ~/nurkit/.claude .        # if you use Claude Code
-cp -r ~/nurkit/.opencode .      # if you use OpenCode
-cp -r ~/nurkit/.agents .        # if you use Antigravity
-cp ~/nurkit/CLAUDE.md .         # if you use Claude Code
-cp ~/nurkit/AGENTS.md .         # if you use OpenCode or Codex
-cp ~/nurkit/opencode.json .     # if you use OpenCode
-
-# Commit
-git add .
-git commit -m "init: add NurKit"
+cp -r ~/nurkit/.agents .    # For Antigravity
+cp -r ~/nurkit/.claude .    # For Claude Code
+cp -r ~/nurkit/.opencode .  # For OpenCode
+cp ~/nurkit/AGENTS.md .     # For OpenCode / Codex
+cp ~/nurkit/opencode.json . # For OpenCode
+cp ~/nurkit/CLAUDE.md .     # For Claude Code
 ```
 
-Open Claude Code, OpenCode, or Antigravity in this folder and type `/clarify` to begin.
-
----
-
-## Existing Project
-
+### 3. Initialize Workflow
+Open your AI tool of choice in the project root and start the cycle:
 ```bash
-cd your-existing-project
-
-# Copy .nurkit — safe, this folder won't exist yet
-cp -r ~/nurkit/.nurkit .
-
-# Claude Code commands
-# If .claude/ does not exist:
-cp -r ~/nurkit/.claude .
-# If .claude/commands/ already exists with other commands:
-cp ~/nurkit/.claude/commands/*.md .claude/commands/
-
-# OpenCode commands
-# If .opencode/ does not exist:
-cp -r ~/nurkit/.opencode .
-# If .opencode/commands/ already exists with other commands:
-cp ~/nurkit/.opencode/commands/*.md .opencode/commands/
-
-# Antigravity commands
-cp -r ~/nurkit/.agents .
-
-# CLAUDE.md — Claude Code users
-# If CLAUDE.md does not exist:
-cp ~/nurkit/CLAUDE.md .
-# If CLAUDE.md already exists — open it and paste NurKit content at the bottom:
-# ---
-# ## NurKit Rules
-# [paste content of ~/nurkit/CLAUDE.md here]
-
-# AGENTS.md — OpenCode and Codex users
-# If AGENTS.md does not exist:
-cp ~/nurkit/AGENTS.md .
-cp ~/nurkit/opencode.json .     # OpenCode only
-
-# If AGENTS.md already exists — use the override file instead (recommended):
-cp ~/nurkit/AGENTS.md AGENTS.override.md
-# Both OpenCode and Codex check AGENTS.override.md first — no merging needed
-
-# If you prefer to merge manually instead:
-# Open AGENTS.md and paste NurKit content at the bottom with a separator:
-# ---
-# ## NurKit Rules
-# [paste content of ~/nurkit/AGENTS.md here]
-
-# If opencode.json already exists — add the instructions array manually:
-# "instructions": [".nurkit/AGENT.md", ".nurkit/CONTEXT.md", ".nurkit/STACK.md"]
-
-# .gitignore — never overwrite, only append these 3 lines if not present:
-echo "" >> .gitignore
-echo "# NurKit" >> .gitignore
-echo ".nurkit/ENV.md" >> .gitignore
-echo ".nurkit/CONTEXT.md" >> .gitignore
-echo ".nurkit/AGENT-ERRORS.md" >> .gitignore
-
-# Commit
-git add .
-git commit -m "chore: add NurKit"
-```
-
-Open Claude Code, OpenCode, or Antigravity and type `/clarify` to begin.
-
----
-
-## The Workflow
-
-Same for both new and existing projects. Same for all tools.
-
-```
-/clarify      →    /plan      →    /analyze
-    ↓
-/gaps         →    /checklist →    /build
-    ↓
-/deploy
+/clarify
 ```
 
 ---
 
-## All Commands
+## 📂 The Repository Brain
+NurKit organizes your project's technical memory into a unified `.nurkit/` directory.
 
-| Command | What it does | Model |
-|---|---|---|
-| `/clarify` | Deep questioning to document your idea | Best |
-| `/clarify my-idea.md` | Clarify from an existing document | Best |
-| `/plan` | Full blueprint from clarify output | Best |
-| `/analyze` | Find what the plan missed from clarify | Best |
-| `/gaps` | Master completeness audit | Best |
-| `/checklist` | Generate phased task list | Cheaper |
-| `/build` | Execute current phase, auto-commit | Cheaper |
-| `/feature auth-system` | Full flow scoped to one feature | Best → Cheaper |
-| `/review` | Compare code vs blueprint | Best |
-| `/status` | Progress dashboard | Any |
-| `/commit` | Meaningful commit + changelog update | Any |
-| `/sync` | Save session state before closing | Any |
-| `/deploy` | Deploy to staging | — |
-| `/deploy --prod` | Deploy to production | — |
+| File | Purpose |
+| :--- | :--- |
+| `AGENT.md` | Core laws, session rituals, and development standards. |
+| `CONTEXT.md` | Persistent session state and chronological history. |
+| `STACK.md` | Strict technology lock to prevent dependency drift. |
+| `STANDARDS.md` | Comprehensive architectural and code quality rules. |
+| `BLUEPRINTS/` | Versioned technical designs and implementation plans. |
+| `CHECKLISTS/` | Granular, phased task lists derived from blueprints. |
 
 ---
 
-## Model Strategy
+## 🛠️ Unified Commands
+NurKit provides a cross-tool command set that works identically across all supported AI interfaces.
 
-NurKit does not switch models automatically. You always choose your model.
-Commands show a `⚡ MODEL HINT` when a different model would serve you better.
-
-- Planning work (clarify, plan, analyze, gaps, review) → use your best model
-- Build work (checklist, build, feature) → a strong reasoning model is fine
-- Routine work (sync, status, commit, deploy) → any model works
-
-This applies to both Claude Code and OpenCode.
-Switch models in your tool's model selector whenever you see a hint.
-
----
-
-## How Each Tool Uses NurKit
-
-### Claude Code
-- Reads `CLAUDE.md` automatically at every session start
-- Agent knows all rules, rituals, and file locations without you explaining
-- Commands live in `.claude/commands/`
-- Type `/` to see all available commands
-
-### OpenCode
-- `AGENTS.md` in the project root is read automatically at every session start
-- `opencode.json` auto-loads `.nurkit/AGENT.md`, `.nurkit/CONTEXT.md`,
-  and `.nurkit/STACK.md` into every session automatically
-- Other nurkit files load lazily — only when the task needs them
-- Commands live in `.opencode/commands/` — type `/` to see them
-- `CLAUDE.md` is supported as a fallback but `AGENTS.md` takes precedence
-
-### Codex
-- Reads `AGENTS.md` automatically at session start — same file as OpenCode
-- No additional setup needed if AGENTS.md is already in the project
-- Global personal rules: create `~/.codex/AGENTS.md` for rules that apply
-  across all your projects (never committed to git)
-- Nested rules: Codex merges AGENTS.md files walking down from project root
-  to current directory — place feature-specific rules closer to that work
-
-### Global OpenCode Rules (optional)
-You can create `~/.config/opencode/AGENTS.md` with personal rules that
-apply across all your projects — personal code style preferences, personal
-model preferences, or any personal workflow rules. These are never committed
-to git and never shared with teammates.
-
-### Antigravity
-- Rules live in `.agents/rules/` — always-on, glob, and model-decision activation
-- Workflows live in `.agents/workflows/` — type `/workflow-name` to run
-- Three rules files: always-on session rituals, code standards on code files,
-  type ownership when defining types
-
-### All tools
-- Read the same `.nurkit/` files — same brain, same memory, same prompts
-- The tool is just the interface — NurKit works identically in all four
-- `AGENTS.md` serves both OpenCode and Codex — one file, two tools
-- `AGENTS.override.md` is the safe option when AGENTS.md already exists
-
----
-
-## Saving a Session
-
-When your context window gets long or you are switching models:
-
-```
-/sync
+```mermaid
+graph TD
+    A[/clarify] --> B[/plan]
+    B --> C[/analyze]
+    C --> D[/gaps]
+    D --> E[/checklist]
+    E --> F[/build]
+    F --> G[/review]
+    G --> H[/commit]
+    H --> I[/deploy]
 ```
 
-This saves complete session state to `.nurkit/CONTEXT.md`.
-Next session the agent reads it and knows exactly where to continue.
+### Command Reference
+| Command | Primary Action | Ideal Model |
+| :--- | :--- | :--- |
+| `/clarify` | Deep-dive requirement gathering. | Reasoning (Opus/Sonnet) |
+| `/plan` | Generate a comprehensive architectural blueprint. | Reasoning (Opus/Sonnet) |
+| `/gaps` | Audit the plan for edge cases and security. | Reasoning (Opus/Sonnet) |
+| `/checklist`| Break the blueprint into executable phases. | Balanced (Sonnet) |
+| `/build` | Execute a phase and auto-commit changes. | Balanced (Sonnet) |
+| `/sync` | Force-save current state to the context ledger. | Fast (Haiku/Flash) |
 
 ---
 
-## The .nurkit/ Folder
+## 🔌 Tool Integration
 
-```
-.nurkit/
-├── AGENT.md              ← Agent laws and session rituals
-├── STANDARDS.md          ← Code quality, folder rules, type rules
-├── CONTEXT.md            ← Current session state + history
-├── STACK.md              ← Tech stack lock
-├── ASSUMPTIONS.md        ← Surfaced assumptions log
-├── KNOWN-ISSUES.md       ← Open and resolved issues
-├── DECISIONS.md          ← Architectural decision log
-├── DEFINITION-OF-DONE.md ← What done means at every level
-├── ENV.md                ← Environment variable docs (gitignored)
-├── DEPLOY.md             ← VPS setup and deploy history
-├── CHANGELOG.md          ← Auto-updated change log
-├── GAPS-TEMPLATE.md      ← Master completeness checklist
-├── CHECKLIST-TEMPLATE.md ← Phased task list shape
-├── prompts/              ← One prompt file per command
-├── blueprints/           ← Versioned architecture blueprints
-├── gaps/                 ← Dated gaps audit outputs
-├── checklists/           ← Versioned task checklists
-└── vision/               ← Vision documents
-```
+### 🧊 OpenCode & Codex
+- Auto-reads `AGENTS.md` (or `AGENTS.override.md`) at session start.
+- `opencode.json` ensures core context is always loaded.
+- Type `/` to access full command suite.
+
+### 🐦 Claude Code
+- Natively reads `CLAUDE.md`.
+- Slash commands are integrated via the `.claude/commands` directory.
+
+### 🛰️ Antigravity
+- Uses `.agents/rules` for always-on session intelligence.
+- Workflows are executable via the standard command palette.
 
 ---
 
-## Tuning NurKit
-
-Every command uses a prompt file in `.nurkit/prompts/`.
-If a command is not producing the results you want,
-open the relevant prompt file and improve it.
-No other changes needed — the command picks it up immediately.
+## 📖 Best Practices
+1. **Always `/sync`**: Before closing a session, use `/sync` to ensure the next model knows exactly where to resume.
+2. **Respect the Header**: NurKit requires specific headers for every file. Never skip them.
+3. **Planning First**: Resist the urge to code before `/plan` and `/gaps` are complete.
 
 ---
 
-## On Windows
+## 📄 License
+Distributed under the **MIT License**. See `LICENSE` for more information.
 
-Use **Git Bash** (included with Git for Windows).
-All commands work identically to Mac.
-
----
-
-## License
-
-MIT — use it, fork it, improve it.
+<div align="center">
+  <sub>Built with ❤️ by the NurKit Community</sub>
+</div>

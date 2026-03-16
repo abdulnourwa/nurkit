@@ -4,6 +4,15 @@
 
 ---
 
+## v1.6.1 — Documentation Overhaul
+
+### Changed
+- Complete README overhaul with professional GitHub aesthetic
+- Added high-quality project banner and status badges
+- Unified command workflow visualization using Mermaid
+- Updated all sections to reflect v1.6.0 features (Codex/Antigravity support)
+- Improved scannability and clarity of installation and setup guides
+
 ## v1.6.0 — Codex Support
 
 ### Added
