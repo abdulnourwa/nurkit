@@ -19,4 +19,4 @@
 
 ## Log
 
-*No entries yet. Entries appear here as tasks are completed.*
+- 2026-03-16: feat: fix new project orientation and remove session start friction

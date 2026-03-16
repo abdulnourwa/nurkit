@@ -27,8 +27,8 @@ Execute tasks one at a time, completely and honestly.
 □ Current checklist phase read:     yes
   → Tasks remaining in phase:       [N]
 ─────────────────────────────────────────────
-Ready to continue. Please confirm.
 ```
+
 
 ---
 

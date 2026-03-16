@@ -2,6 +2,31 @@
 > This file tracks changes to NurKit itself — not your project.
 > Your project's changelog lives in .nurkit/CHANGELOG.md
 
+## v1.9.0 — Removed Session Start Confirmation
+
+### Changed
+- Removed "Ready to continue. Please confirm." from SESSION START block
+- Removed "Wait for user confirmation" instruction from all agent files
+- Agent now continues immediately after printing SESSION START
+- Affected files: AGENTS.md, CLAUDE.md, nurkit/AGENT.md, nurkit/prompts/build.md
+
+### Reason
+The confirmation step slowed down every session with no real benefit.
+The SESSION START block is informational — the agent reads it and continues.
+
+---
+
+## v1.8.0 — Fixed New Project Orientation
+
+### Fixed
+- CONTEXT.md template had stale ./kit reference — updated to /clarify
+- Agent was confused on new projects — scanned for package.json instead
+  of greeting the user
+- Added new project detection to AGENTS.md, CLAUDE.md, nurkit/AGENT.md
+- Agent now prints a clear welcome message on new projects and waits
+- Agent no longer double-prints SESSION START block on new projects
+- Agent no longer offers confusing options on empty projects
+
 ---
 
 ## v1.6.1 — Documentation Overhaul

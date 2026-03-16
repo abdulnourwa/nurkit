@@ -20,12 +20,35 @@
 □ Current checklist phase read:     yes
   → Tasks remaining in phase:       [N]
 ─────────────────────────────────────────────
-Ready to continue. Please confirm.
 ```
 
-Wait for user confirmation. Do not write a single line of code before this.
+### New Project Detection
+
+After printing the SESSION START block, check the Current State in CONTEXT.md.
+
+If phase is "Not started" and last completed is "Nothing yet":
+
+Print this exact message and stop — do not scan files, do not analyze the codebase,
+do not suggest options:
+
+```
+👋 New project detected. Nothing has been started yet.
+
+To begin, type /clarify — the agent will ask you questions about your idea
+and document everything before any planning or code is written.
+
+When you have an existing idea document, type /clarify your-idea-file.md
+```
+
+Do not do anything else until the user types a command.
+
+### Existing Project Detection
+
+If phase is NOT "Not started" — continue normally with the SESSION START
+block and proceed with the task.
 
 ---
+
 
 ## TASK COMPLETE — PRINT THIS BLOCK AFTER EVERY SINGLE TASK
 

@@ -127,5 +127,5 @@ graph TD
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
 <div align="center">
-  <sub>Built with ❤️ by the NurKit Community</sub>
+  <sub>Built with ❤️ by NURLUX</sub>
 </div>
