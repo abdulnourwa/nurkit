@@ -4,6 +4,29 @@
 
 ---
 
+## v1.6.0 — Codex Support
+
+### Added
+- Codex support via existing AGENTS.md — no new files needed
+- AGENTS.override.md documented as the recommended approach for existing
+  projects across both OpenCode and Codex
+- Global Codex guidance via ~/.codex/AGENTS.md documented in README
+- README updated: New Project, Existing Project, and How Each Tool sections
+
+### How it works
+- Codex reads AGENTS.md automatically at session start
+- Same AGENTS.md serves both OpenCode and Codex
+- opencode.json is OpenCode-only — Codex does not use it
+- AGENTS.override.md takes precedence over AGENTS.md in both tools —
+  use it when an AGENTS.md already exists in the project
+
+### Tool support summary
+- Claude Code → CLAUDE.md
+- OpenCode → AGENTS.md + opencode.json
+- Codex → AGENTS.md
+- Antigravity → .agents/rules/ + .agents/workflows/
+- All tools → same .nurkit/ brain
+
 ## v1.5.0 — Native OpenCode Support via AGENTS.md
 
 ### Added

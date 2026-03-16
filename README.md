@@ -1,6 +1,6 @@
 # NurKit
 > AI-powered project orchestration for serious vibe coding.
-> Works with Claude Code, OpenCode, and Antigravity. No bash scripts. No setup headaches.
+> Works with Claude Code, OpenCode, Codex, and Antigravity. No bash scripts. No setup headaches.
 
 ---
 
@@ -41,7 +41,7 @@ cp -r ~/nurkit/.claude .        # if you use Claude Code
 cp -r ~/nurkit/.opencode .      # if you use OpenCode
 cp -r ~/nurkit/.agents .        # if you use Antigravity
 cp ~/nurkit/CLAUDE.md .         # if you use Claude Code
-cp ~/nurkit/AGENTS.md .         # if you use OpenCode
+cp ~/nurkit/AGENTS.md .         # if you use OpenCode or Codex
 cp ~/nurkit/opencode.json .     # if you use OpenCode
 
 # Commit
@@ -84,14 +84,21 @@ cp ~/nurkit/CLAUDE.md .
 # ## NurKit Rules
 # [paste content of ~/nurkit/CLAUDE.md here]
 
-# AGENTS.md — OpenCode users
+# AGENTS.md — OpenCode and Codex users
 # If AGENTS.md does not exist:
 cp ~/nurkit/AGENTS.md .
-cp ~/nurkit/opencode.json .
-# If AGENTS.md already exists — open it and paste NurKit content at the bottom:
+cp ~/nurkit/opencode.json .     # OpenCode only
+
+# If AGENTS.md already exists — use the override file instead (recommended):
+cp ~/nurkit/AGENTS.md AGENTS.override.md
+# Both OpenCode and Codex check AGENTS.override.md first — no merging needed
+
+# If you prefer to merge manually instead:
+# Open AGENTS.md and paste NurKit content at the bottom with a separator:
 # ---
 # ## NurKit Rules
 # [paste content of ~/nurkit/AGENTS.md here]
+
 # If opencode.json already exists — add the instructions array manually:
 # "instructions": [".nurkit/AGENT.md", ".nurkit/CONTEXT.md", ".nurkit/STACK.md"]
 
@@ -176,6 +183,14 @@ Switch models in your tool's model selector whenever you see a hint.
 - Commands live in `.opencode/commands/` — type `/` to see them
 - `CLAUDE.md` is supported as a fallback but `AGENTS.md` takes precedence
 
+### Codex
+- Reads `AGENTS.md` automatically at session start — same file as OpenCode
+- No additional setup needed if AGENTS.md is already in the project
+- Global personal rules: create `~/.codex/AGENTS.md` for rules that apply
+  across all your projects (never committed to git)
+- Nested rules: Codex merges AGENTS.md files walking down from project root
+  to current directory — place feature-specific rules closer to that work
+
 ### Global OpenCode Rules (optional)
 You can create `~/.config/opencode/AGENTS.md` with personal rules that
 apply across all your projects — personal code style preferences, personal
@@ -190,7 +205,9 @@ to git and never shared with teammates.
 
 ### All tools
 - Read the same `.nurkit/` files — same brain, same memory, same prompts
-- The tool is just the interface — NurKit works identically in all three
+- The tool is just the interface — NurKit works identically in all four
+- `AGENTS.md` serves both OpenCode and Codex — one file, two tools
+- `AGENTS.override.md` is the safe option when AGENTS.md already exists
 
 ---
 
