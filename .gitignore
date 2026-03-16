@@ -1,9 +1,9 @@
 # NurKit — .gitignore
 
 # ── NurKit files — never commit these ─────
-.kit/ENV.md
-.kit/CONTEXT.md
-.kit/AGENT-ERRORS.md
+.nurkit/ENV.md
+.nurkit/CONTEXT.md
+.nurkit/AGENT-ERRORS.md
 
 # ── Environment variables ──────────────────
 .env

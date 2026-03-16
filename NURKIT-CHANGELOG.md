@@ -1,8 +1,22 @@
 # NURKIT-CHANGELOG.md
 > This file tracks changes to NurKit itself — not your project.
-> Your project's changelog lives in .kit/CHANGELOG.md
+> Your project's changelog lives in .nurkit/CHANGELOG.md
 
 ---
+
+## v1.4.0 — Renamed .kit/ to .nurkit/, Added Antigravity Support
+
+### Changed
+- Renamed `.kit/` folder to `.nurkit/` across entire project
+- All internal references updated from `.kit/` to `.nurkit/`
+
+### Added
+- `.agents/rules/nurkit-always.md` — always-on rules for Antigravity
+- `.agents/rules/nurkit-standards.md` — glob-activated code standards
+- `.agents/rules/nurkit-types.md` — model-decision type ownership rules
+- `.agents/workflows/` — 12 workflow files for Antigravity slash commands
+- Antigravity users can now use /clarify, /plan, /analyze, /gaps,
+  /checklist, /build, /feature, /review, /sync, /status, /commit, /deploy
 
 ## v1.3.0 — Removed Automatic Model Pinning
 
@@ -73,7 +87,7 @@ NurKit should work with any model the user has available.
 - DEPLOY.md — VPS setup, deploy process, and history
 - CONTEXT.md — session state with appended history
 - CLAUDE.md — Claude Code compatible agent rules
-- All 12 prompt files in .kit/prompts/
+- All 12 prompt files in .nurkit/prompts/
 
 ### Key Design Decisions
 - Tool-agnostic: works with Claude Code, OpenCode, or any AI tool

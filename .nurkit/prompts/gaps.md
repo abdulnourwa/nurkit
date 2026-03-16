@@ -12,7 +12,7 @@ Use GAPS-TEMPLATE.md as your master checklist. Work through every section. Do no
 ## Your Process
 
 ### Step 1 — Load the Template
-Read .kit/GAPS-TEMPLATE.md completely before starting.
+Read .nurkit/GAPS-TEMPLATE.md completely before starting.
 
 ### Step 2 — Work Through Every Section
 For each item mark:

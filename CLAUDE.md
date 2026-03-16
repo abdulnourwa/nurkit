@@ -1,13 +1,13 @@
 # NurKit — CLAUDE.md
 # Claude Code reads this file automatically at every session start.
-# This is a copy of .kit/AGENT.md — keep both in sync when AGENT.md is updated.
+# This is a copy of .nurkit/AGENT.md — keep both in sync when AGENT.md is updated.
 
 ---
 
 # NurKit Agent — Laws & Rituals
 > NurKit Version: 1.0.0
 > Read this file fully. Every session. No exceptions.
-> For code standards, folder rules, and type rules → read .kit/STANDARDS.md when starting a new file.
+> For code standards, folder rules, and type rules → read .nurkit/STANDARDS.md when starting a new file.
 
 ---
 
@@ -46,7 +46,7 @@ What changed:      [specific description — not "updated the file"]
 What was NOT done: [anything skipped and why, or "nothing skipped"]
 ─────────────────────────────────────────────
 □ File header updated (LAST UPDATED, LAST CHANGE, CHANGELOG, CONTAINS)
-□ .kit/CHANGELOG.md updated with clear entry
+□ .nurkit/CHANGELOG.md updated with clear entry
 □ Task checked off in active checklist
 □ Impact check done
   → Files that import this:         [list, or "none"]
@@ -119,7 +119,7 @@ I will not proceed until this is resolved.
 ### Never Do These
 - Never refactor while fixing a bug
 - Never rename things outside scope of current task
-- Never add a library not in `.kit/STACK.md` without user confirmation
+- Never add a library not in `.nurkit/STACK.md` without user confirmation
 - Never commit secrets or credentials
 - Never skip the file header on a new file
 - Never put more than one component or feature in one file
@@ -128,19 +128,19 @@ I will not proceed until this is resolved.
 - Never import directly from another feature's internal files — use its index file
 
 ### New Files
-Every new file gets the full header from `.kit/STANDARDS.md`. No exceptions.
+Every new file gets the full header from `.nurkit/STANDARDS.md`. No exceptions.
 
 ### New Environment Variables
-Document in `.kit/ENV.md` immediately — before writing any code that uses it.
+Document in `.nurkit/ENV.md` immediately — before writing any code that uses it.
 
 ### Architectural Decisions
-Log in `.kit/DECISIONS.md` with reasoning and alternatives considered.
+Log in `.nurkit/DECISIONS.md` with reasoning and alternatives considered.
 
 ### Unexpected Findings
-Stop. Log in `.kit/KNOWN-ISSUES.md`. Surface to user. Then continue.
+Stop. Log in `.nurkit/KNOWN-ISSUES.md`. Surface to user. Then continue.
 
 ### Assumptions
-Log in `.kit/ASSUMPTIONS.md` immediately.
+Log in `.nurkit/ASSUMPTIONS.md` immediately.
 
 ### Types — Search Before Defining
 1. Check `shared/types/index.ts` — does this type exist?
@@ -155,16 +155,16 @@ Log in `.kit/ASSUMPTIONS.md` immediately.
 | File | When |
 |---|---|
 | CLAUDE.md (this file) | Every session start |
-| `.kit/CONTEXT.md` | Every session start |
-| `.kit/STACK.md` | Every session start |
+| `.nurkit/CONTEXT.md` | Every session start |
+| `.nurkit/STACK.md` | Every session start |
 | Current checklist phase | Every session start |
-| `.kit/STANDARDS.md` | When creating a new file or unsure about style/structure/types |
+| `.nurkit/STANDARDS.md` | When creating a new file or unsure about style/structure/types |
 | Latest blueprint | When task needs architectural understanding |
-| `.kit/ASSUMPTIONS.md` | When something feels unclear |
-| `.kit/KNOWN-ISSUES.md` | When debugging |
-| `.kit/DECISIONS.md` | When considering architectural change |
-| `.kit/ENV.md` | When adding or using env variables |
-| `.kit/GAPS-TEMPLATE.md` | Only during ./kit gaps |
+| `.nurkit/ASSUMPTIONS.md` | When something feels unclear |
+| `.nurkit/KNOWN-ISSUES.md` | When debugging |
+| `.nurkit/DECISIONS.md` | When considering architectural change |
+| `.nurkit/ENV.md` | When adding or using env variables |
+| `.nurkit/GAPS-TEMPLATE.md` | Only during ./kit gaps |
 
 ---
 

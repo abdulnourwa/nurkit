@@ -1,6 +1,6 @@
 # NurKit
 > AI-powered project orchestration for serious vibe coding.
-> Works with Claude Code and OpenCode. No bash scripts. No setup headaches.
+> Works with Claude Code, OpenCode, and Antigravity. No bash scripts. No setup headaches.
 
 ---
 
@@ -36,9 +36,10 @@ mkdir my-app && cd my-app
 git init
 
 # Copy NurKit into your project
-cp -r ~/nurkit/.kit .
+cp -r ~/nurkit/.nurkit .
 cp -r ~/nurkit/.claude .        # if you use Claude Code
 cp -r ~/nurkit/.opencode .      # if you use OpenCode
+cp -r ~/nurkit/.agents .        # if you use Antigravity
 cp ~/nurkit/CLAUDE.md .         # if you use Claude Code
 
 # Commit
@@ -46,7 +47,7 @@ git add .
 git commit -m "init: add NurKit"
 ```
 
-Open Claude Code or OpenCode in this folder and type `/clarify` to begin.
+Open Claude Code, OpenCode, or Antigravity in this folder and type `/clarify` to begin.
 
 ---
 
@@ -55,8 +56,8 @@ Open Claude Code or OpenCode in this folder and type `/clarify` to begin.
 ```bash
 cd your-existing-project
 
-# Copy .kit — safe, this folder won't exist yet
-cp -r ~/nurkit/.kit .
+# Copy .nurkit — safe, this folder won't exist yet
+cp -r ~/nurkit/.nurkit .
 
 # Claude Code commands
 # If .claude/ does not exist:
@@ -70,6 +71,9 @@ cp -r ~/nurkit/.opencode .
 # If .opencode/commands/ already exists with other commands:
 cp ~/nurkit/.opencode/commands/*.md .opencode/commands/
 
+# Antigravity commands
+cp -r ~/nurkit/.agents .
+
 # CLAUDE.md
 # If CLAUDE.md does not exist:
 cp ~/nurkit/CLAUDE.md .
@@ -81,22 +85,22 @@ cp ~/nurkit/CLAUDE.md .
 # .gitignore — never overwrite, only append these 3 lines if not present:
 echo "" >> .gitignore
 echo "# NurKit" >> .gitignore
-echo ".kit/ENV.md" >> .gitignore
-echo ".kit/CONTEXT.md" >> .gitignore
-echo ".kit/AGENT-ERRORS.md" >> .gitignore
+echo ".nurkit/ENV.md" >> .gitignore
+echo ".nurkit/CONTEXT.md" >> .gitignore
+echo ".nurkit/AGENT-ERRORS.md" >> .gitignore
 
 # Commit
 git add .
 git commit -m "chore: add NurKit"
 ```
 
-Open Claude Code or OpenCode and type `/clarify` to begin.
+Open Claude Code, OpenCode, or Antigravity and type `/clarify` to begin.
 
 ---
 
 ## The Workflow
 
-Same for both new and existing projects. Same for both tools.
+Same for both new and existing projects. Same for all tools.
 
 ```
 /clarify      →    /plan      →    /analyze
@@ -156,9 +160,15 @@ Switch models in your tool's model selector whenever you see a hint.
 - Models pinned per command — planning always Opus, build always Sonnet
 - Type `/` to see all available commands
 
-### Both tools
-- Read the same `.kit/` files — same brain, same memory, same prompts
-- The tool is just the interface — NurKit works identically in both
+### Antigravity
+- Rules live in `.agents/rules/` — always-on, glob, and model-decision activation
+- Workflows live in `.agents/workflows/` — type `/workflow-name` to run
+- Three rules files: always-on session rituals, code standards on code files,
+  type ownership when defining types
+
+### All tools
+- Read the same `.nurkit/` files — same brain, same memory, same prompts
+- The tool is just the interface — NurKit works identically in all three
 
 ---
 
@@ -170,15 +180,15 @@ When your context window gets long or you are switching models:
 /sync
 ```
 
-This saves complete session state to `.kit/CONTEXT.md`.
+This saves complete session state to `.nurkit/CONTEXT.md`.
 Next session the agent reads it and knows exactly where to continue.
 
 ---
 
-## The .kit/ Folder
+## The .nurkit/ Folder
 
 ```
-.kit/
+.nurkit/
 ├── AGENT.md              ← Agent laws and session rituals
 ├── STANDARDS.md          ← Code quality, folder rules, type rules
 ├── CONTEXT.md            ← Current session state + history
@@ -203,7 +213,7 @@ Next session the agent reads it and knows exactly where to continue.
 
 ## Tuning NurKit
 
-Every command uses a prompt file in `.kit/prompts/`.
+Every command uses a prompt file in `.nurkit/prompts/`.
 If a command is not producing the results you want,
 open the relevant prompt file and improve it.
 No other changes needed — the command picks it up immediately.
