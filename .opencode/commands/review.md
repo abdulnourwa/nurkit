@@ -1,6 +1,5 @@
 ---
 description: Compare what was built against the blueprint and find drift. Use your best model.
-model: anthropic/claude-opus-4-6
 ---
 
 Read .kit/prompts/review.md and follow it exactly.

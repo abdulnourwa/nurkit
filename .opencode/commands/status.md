@@ -1,6 +1,5 @@
 ---
-description: Show project progress, pending tasks, and recent changes.
-model: anthropic/claude-sonnet-4-6
+description: Show project progress, pending tasks, and recent changes. Any model works.
 ---
 
 Read .kit/prompts/status.md and follow it exactly.

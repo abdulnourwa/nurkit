@@ -131,14 +131,15 @@ Same for both new and existing projects. Same for both tools.
 
 ## Model Strategy
 
-### OpenCode
-Models are pinned automatically per command. You never switch manually.
-- Planning commands → Opus (clarify, plan, analyze, gaps, review)
-- Build commands → Sonnet (checklist, build, feature, sync, status, commit, deploy)
+NurKit does not switch models automatically. You always choose your model.
+Commands show a `⚡ MODEL HINT` when a different model would serve you better.
 
-### Claude Code
-No automatic pinning. Watch for `⚡ MODEL HINT` in responses.
-- See a hint → switch model in the model selector → continue
+- Planning work (clarify, plan, analyze, gaps, review) → use your best model
+- Build work (checklist, build, feature) → a strong reasoning model is fine
+- Routine work (sync, status, commit, deploy) → any model works
+
+This applies to both Claude Code and OpenCode.
+Switch models in your tool's model selector whenever you see a hint.
 
 ---
 

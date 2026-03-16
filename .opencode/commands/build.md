@@ -1,6 +1,5 @@
 ---
-description: Execute current phase of the checklist. One task at a time.
-model: anthropic/claude-sonnet-4-6
+description: Execute current phase of the checklist. One task at a time. Any model works.
 ---
 
 Read .kit/prompts/build.md and follow it exactly.

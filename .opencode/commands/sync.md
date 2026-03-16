@@ -1,6 +1,5 @@
 ---
-description: Save session state to CONTEXT.md before closing.
-model: anthropic/claude-sonnet-4-6
+description: Save session state to CONTEXT.md before closing. Any model works.
 ---
 
 Read .kit/prompts/sync.md and follow it exactly.

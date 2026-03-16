@@ -1,6 +1,5 @@
 ---
 description: Full completeness audit — UI, roles, security, types, edge cases. Use your best model.
-model: anthropic/claude-opus-4-6
 ---
 
 Read .kit/prompts/gaps.md and follow it exactly.

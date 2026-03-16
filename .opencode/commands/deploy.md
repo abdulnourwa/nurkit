@@ -1,6 +1,5 @@
 ---
-description: Deploy to staging. Use --prod argument for production.
-model: anthropic/claude-sonnet-4-6
+description: Deploy to staging. Use --prod argument for production. Any model works.
 ---
 
 Read .kit/prompts/deploy.md and follow it exactly.

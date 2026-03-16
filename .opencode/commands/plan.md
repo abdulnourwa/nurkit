@@ -1,6 +1,5 @@
 ---
-description: Write full blueprint from VISION.md. Uses Opus automatically.
-model: anthropic/claude-opus-4-6
+description: Write full blueprint from VISION.md. Use your best model.
 ---
 
 Read .kit/prompts/plan.md and follow it exactly.

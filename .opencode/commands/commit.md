@@ -1,6 +1,5 @@
 ---
-description: Generate a meaningful commit message and update CHANGELOG.md.
-model: anthropic/claude-sonnet-4-6
+description: Generate a meaningful commit message and update CHANGELOG.md. Any model works.
 ---
 
 Read .kit/prompts/commit.md and follow it exactly.

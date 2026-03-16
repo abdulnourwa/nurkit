@@ -1,6 +1,5 @@
 ---
-description: Full NurKit flow scoped to one feature. Pass feature name as argument.
-model: anthropic/claude-sonnet-4-6
+description: Full NurKit flow scoped to one feature. Pass feature name as argument. Any model works.
 ---
 
 Read .kit/prompts/feature.md and follow it exactly.

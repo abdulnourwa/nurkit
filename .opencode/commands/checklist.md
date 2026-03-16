@@ -1,6 +1,5 @@
 ---
-description: Generate phased task list from the complete blueprint.
-model: anthropic/claude-sonnet-4-6
+description: Generate phased task list from the complete blueprint. Any model works.
 ---
 
 Read .kit/prompts/checklist.md and follow it exactly.
