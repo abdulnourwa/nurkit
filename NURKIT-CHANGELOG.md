@@ -4,6 +4,18 @@
 
 ---
 
+## v1.3.0 — Removed Automatic Model Pinning
+
+### Changed
+- Removed all model: pins from .opencode/commands/ files
+- Model strategy is now identical for Claude Code and OpenCode
+- Both tools use ⚡ MODEL HINT comments only — user always chooses the model
+- README model strategy section updated to reflect this
+
+### Reason
+Not all users have access to specific models or API subscriptions.
+NurKit should work with any model the user has available.
+
 ## v1.2.0 — Removed Shell Script, Simplified Setup
 
 ### Removed
