@@ -1,6 +1,6 @@
 <div align="center">
 
-![NurKit Banner](file:///C:/Users/MiQDAD/.gemini/antigravity/brain/ebad8e14-ce2e-45d8-a374-a22f4dc3f12a/nurkit_banner_1773653843385.png)
+![NurKit Banner](.nurkit/assets/nurkit_banner.png)
 
 # NurKit
 ### AI-Powered Project Orchestration for Professional Vibe Coding
@@ -77,14 +77,14 @@ NurKit provides a cross-tool command set that works identically across all suppo
 
 ```mermaid
 graph TD
-    A[/clarify] --> B[/plan]
-    B --> C[/analyze]
-    C --> D[/gaps]
-    D --> E[/checklist]
-    E --> F[/build]
-    F --> G[/review]
-    G --> H[/commit]
-    H --> I[/deploy]
+    A["/clarify"] --> B["/plan"]
+    B --> C["/analyze"]
+    C --> D["/gaps"]
+    D --> E["/checklist"]
+    E --> F["/build"]
+    F --> G["/review"]
+    G --> H["/commit"]
+    H --> I["/deploy"]
 ```
 
 ### Command Reference
