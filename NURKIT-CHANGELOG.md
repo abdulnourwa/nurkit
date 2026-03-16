@@ -4,6 +4,28 @@
 
 ---
 
+## v1.5.0 — Native OpenCode Support via AGENTS.md
+
+### Added
+- `AGENTS.md` — OpenCode native rules file, read automatically at session start
+- `opencode.json` — auto-loads .nurkit/AGENT.md, .nurkit/CONTEXT.md,
+  .nurkit/STACK.md into every OpenCode session
+- Lazy loading via @ references for large files (STANDARDS.md, GAPS-TEMPLATE.md,
+  DEFINITION-OF-DONE.md, blueprints, checklists)
+- Global AGENTS.md guidance for personal cross-project rules
+- README updated with OpenCode setup instructions for new and existing projects
+
+### How it works
+- OpenCode reads AGENTS.md first (takes precedence over CLAUDE.md)
+- opencode.json ensures 3 critical files are always in context
+- All other nurkit files load only when the task needs them
+- Claude Code continues using CLAUDE.md as before — no change
+
+### Precedence
+- OpenCode: AGENTS.md wins over CLAUDE.md
+- Claude Code: CLAUDE.md only (ignores AGENTS.md)
+- Both read the same .nurkit/ files — same brain, same memory
+
 ## v1.4.0 — Renamed .kit/ to .nurkit/, Added Antigravity Support
 
 ### Changed

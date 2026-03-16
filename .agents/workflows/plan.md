@@ -1,3 +1,7 @@
+---
+name: plan
+description: Write the full project blueprint from VISION.md
+---
 # NurKit — Plan
 
 Write the full project blueprint from VISION.md.

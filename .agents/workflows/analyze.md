@@ -1,3 +1,7 @@
+---
+name: analyze
+description: Check that the plan missed nothing from clarify
+---
 # NurKit — Analyze
 
 Check that the plan missed nothing from clarify.

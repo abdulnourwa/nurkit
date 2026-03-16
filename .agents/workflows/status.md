@@ -1,8 +1,7 @@
-# NurKit — Status
-
-Show project progress, pending tasks, and recent changes.
-
-## Steps
+---
+name: status
+description: Show project status
+---
 
 1. Read `.nurkit/prompts/status.md` completely
 2. Read `.nurkit/CONTEXT.md` and the latest checklist

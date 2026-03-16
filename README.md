@@ -41,6 +41,8 @@ cp -r ~/nurkit/.claude .        # if you use Claude Code
 cp -r ~/nurkit/.opencode .      # if you use OpenCode
 cp -r ~/nurkit/.agents .        # if you use Antigravity
 cp ~/nurkit/CLAUDE.md .         # if you use Claude Code
+cp ~/nurkit/AGENTS.md .         # if you use OpenCode
+cp ~/nurkit/opencode.json .     # if you use OpenCode
 
 # Commit
 git add .
@@ -74,13 +76,24 @@ cp ~/nurkit/.opencode/commands/*.md .opencode/commands/
 # Antigravity commands
 cp -r ~/nurkit/.agents .
 
-# CLAUDE.md
+# CLAUDE.md — Claude Code users
 # If CLAUDE.md does not exist:
 cp ~/nurkit/CLAUDE.md .
-# If CLAUDE.md already exists — open it and paste this at the bottom:
+# If CLAUDE.md already exists — open it and paste NurKit content at the bottom:
 # ---
 # ## NurKit Rules
 # [paste content of ~/nurkit/CLAUDE.md here]
+
+# AGENTS.md — OpenCode users
+# If AGENTS.md does not exist:
+cp ~/nurkit/AGENTS.md .
+cp ~/nurkit/opencode.json .
+# If AGENTS.md already exists — open it and paste NurKit content at the bottom:
+# ---
+# ## NurKit Rules
+# [paste content of ~/nurkit/AGENTS.md here]
+# If opencode.json already exists — add the instructions array manually:
+# "instructions": [".nurkit/AGENT.md", ".nurkit/CONTEXT.md", ".nurkit/STACK.md"]
 
 # .gitignore — never overwrite, only append these 3 lines if not present:
 echo "" >> .gitignore
@@ -156,9 +169,18 @@ Switch models in your tool's model selector whenever you see a hint.
 - Type `/` to see all available commands
 
 ### OpenCode
-- Commands live in `.opencode/commands/`
-- Models pinned per command — planning always Opus, build always Sonnet
-- Type `/` to see all available commands
+- `AGENTS.md` in the project root is read automatically at every session start
+- `opencode.json` auto-loads `.nurkit/AGENT.md`, `.nurkit/CONTEXT.md`,
+  and `.nurkit/STACK.md` into every session automatically
+- Other nurkit files load lazily — only when the task needs them
+- Commands live in `.opencode/commands/` — type `/` to see them
+- `CLAUDE.md` is supported as a fallback but `AGENTS.md` takes precedence
+
+### Global OpenCode Rules (optional)
+You can create `~/.config/opencode/AGENTS.md` with personal rules that
+apply across all your projects — personal code style preferences, personal
+model preferences, or any personal workflow rules. These are never committed
+to git and never shared with teammates.
 
 ### Antigravity
 - Rules live in `.agents/rules/` — always-on, glob, and model-decision activation

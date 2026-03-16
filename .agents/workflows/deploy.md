@@ -1,3 +1,7 @@
+---
+name: deploy
+description: Deploy to staging. Pass --prod as argument for production
+---
 # NurKit — Deploy
 
 Deploy to staging. Pass --prod as argument for production.

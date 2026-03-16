@@ -1,3 +1,7 @@
+---
+name: checklist
+description: Generate the phased task list from the complete blueprint
+---
 # NurKit — Checklist
 
 Generate the phased task list from the complete blueprint.

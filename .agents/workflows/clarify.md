@@ -1,3 +1,7 @@
+---
+name: clarify
+description: Deep questioning to fully document your idea before any planning begins
+---
 # NurKit — Clarify
 
 Deep questioning to fully document your idea before any planning begins.

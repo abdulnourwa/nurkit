@@ -1,3 +1,7 @@
+---
+name: gaps
+description: Full completeness audit — UI states, roles, security, types, edge cases
+---
 # NurKit — Gaps
 
 Full completeness audit — UI states, roles, security, types, edge cases.

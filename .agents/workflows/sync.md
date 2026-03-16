@@ -1,3 +1,7 @@
+---
+name: sync
+description: Save session state before closing or switching models
+---
 # NurKit — Sync
 
 Save session state before closing or switching models.

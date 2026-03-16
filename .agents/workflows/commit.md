@@ -1,3 +1,7 @@
+---
+name: commit
+description: Generate a meaningful commit message and update CHANGELOG.md
+---
 # NurKit — Commit
 
 Generate a meaningful commit message and update CHANGELOG.md.

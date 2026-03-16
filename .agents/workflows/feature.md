@@ -1,3 +1,7 @@
+---
+name: feature
+description: Full NurKit flow scoped to one feature. Pass the feature name as argument
+---
 # NurKit — Feature
 
 Full NurKit flow scoped to one feature. Pass the feature name as argument.

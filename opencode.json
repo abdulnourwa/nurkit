@@ -1,0 +1,8 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    ".nurkit/AGENT.md",
+    ".nurkit/CONTEXT.md",
+    ".nurkit/STACK.md"
+  ]
+}

@@ -1,3 +1,7 @@
+---
+name: review
+description: Compare what was built against the blueprint and find drift
+---
 # NurKit — Review
 
 Compare what was built against the blueprint and find drift.

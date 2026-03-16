@@ -1,3 +1,7 @@
+---
+name: build
+description: Execute the current phase of the checklist
+---
 # NurKit — Build
 
 Execute the current phase of the checklist. One task at a time.
