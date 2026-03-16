@@ -319,15 +319,19 @@ EOF
   if ! git rev-parse --git-dir &>/dev/null 2>&1; then
     git init --quiet
     print_step "Initialized git repository"
+  else
+    print_info "Git repository already exists — skipping init"
   fi
 
-  # Create .gitignore for kit
-  if [ ! -f ".gitignore" ]; then
-    cat > ".gitignore" << 'EOF'
-# NurKit — never commit these
+  # Create or update .gitignore for kit
+  GITIGNORE_CONTENT="# NurKit — never commit these
 .kit/ENV.md
 .kit/CONTEXT.md
-.kit/AGENT-ERRORS.md
+.kit/AGENT-ERRORS.md"
+
+  if [ ! -f ".gitignore" ]; then
+    cat > ".gitignore" << EOF
+$GITIGNORE_CONTENT
 
 # Common
 node_modules/
@@ -339,6 +343,34 @@ build/
 *.log
 EOF
     print_step "Created .gitignore"
+  else
+    # Check if NurKit lines are already there
+    if ! grep -q ".kit/ENV.md" ".gitignore"; then
+      echo "" >> ".gitignore"
+      echo "$GITIGNORE_CONTENT" >> ".gitignore"
+      print_step "Appended NurKit ignores to existing .gitignore"
+    else
+      print_info "NurKit ignores already present in .gitignore"
+    fi
+  fi
+
+  # Create CLAUDE.md symlink or handle existing
+  if [ ! -f "CLAUDE.md" ] && [ ! -L "CLAUDE.md" ]; then
+    ln -sf "$KIT_DIR/AGENT.md" "CLAUDE.md"
+    print_step "Created CLAUDE.md (symlink to .kit/AGENT.md)"
+  elif [ -f "CLAUDE.md" ] && [ ! -L "CLAUDE.md" ]; then
+    print_warn "CLAUDE.md already exists."
+    echo "  (a) Append NurKit rules to the bottom"
+    echo "  (b) Skip — I will merge manually"
+    read -r -p "Choose (a/b): " claude_choice
+    if [ "$claude_choice" = "a" ]; then
+      cat "$KIT_DIR/AGENT.md" >> "CLAUDE.md"
+      print_step "Appended NurKit rules to CLAUDE.md"
+    else
+      print_info "Skipped CLAUDE.md merging."
+    fi
+  else
+    print_info "CLAUDE.md already exists as a symlink."
   fi
 
   echo ""
