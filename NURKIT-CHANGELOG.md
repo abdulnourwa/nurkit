@@ -4,6 +4,15 @@
 
 ---
 
+## v1.1.0 — Slash Commands
+
+### Added
+- `.claude/commands/` — 12 slash commands for Claude Code
+- `.opencode/commands/` — 12 slash commands for OpenCode with models pinned per command
+- Planning commands (clarify, plan, analyze, gaps, review) pinned to Opus in OpenCode
+- Build commands (checklist, build, feature, sync, status, commit, deploy) pinned to Sonnet in OpenCode
+- README updated with slash command usage section
+
 ## v1.0.0 — Initial Release
 
 ### Commands

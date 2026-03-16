@@ -85,8 +85,34 @@ chmod +x kit
 | `./kit status` | Progress dashboard | Any |
 | `./kit commit` | Meaningful commit + changelog | Any |
 | `./kit sync` | Save session state before closing | Any |
-| `./kit deploy` | Deploy to staging | — |
 | `./kit deploy --prod` | Deploy to production | — |
+
+---
+
+## Slash Commands
+
+### Claude Code
+Commands are in `.claude/commands/`. Type `/` inside Claude Code to use them.
+No model switching needed — just use the commands in order.
+
+### OpenCode
+Commands are in `.opencode/commands/`. Type `/` inside OpenCode to use them.
+Models are pinned per command automatically — planning commands use Opus, build commands use Sonnet.
+
+### Usage
+/clarify          — document your idea
+/plan             — write the blueprint
+/analyze          — verify plan vs clarify
+/gaps             — completeness audit
+/checklist        — generate tasks
+/build            — execute current phase
+/feature auth     — scoped feature flow
+/review           — drift analysis
+/sync             — save session before closing
+/status           — progress dashboard
+/commit           — meaningful commit + changelog
+/deploy           — deploy to staging
+/deploy --prod    — deploy to production
 
 ---
 
